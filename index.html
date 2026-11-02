@@ -3,226 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Салом! - Bootstrap 5 Demo</title>
-    <!-- Bootstrap 5 CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Google Fonts (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Тўйга Таклифнома | Никоҳ Тўйи</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            100: '#fdf8e6',
+                            200: '#f7e8b5',
+                            300: '#efd47e',
+                            400: '#e5be49',
+                            500: '#d4af37',
+                            600: '#aa8823',
+                            700: '#806216',
+                            800: '#58420e',
+                            900: '#342605',
+                        },
+                        cream: '#FAF7F2',
+                        darkGreen: '#0A1410',
+                        richBlack: '#060809',
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        cursive: ['"Alex Brush"', 'cursive'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            color: #333;
-            scroll-behavior: smooth;
+            background-color: #060809;
+            color: #FAF7F2;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
         }
 
-        /* Hero Gradient Styling */
-        .hero-section {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            min-height: 85vh;
-            display: flex;
-            align-items: center;
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .btn-custom-light {
-            background-color: #ffffff;
-            color: #6366f1;
-            font-weight: 600;
-            border-radius: 50px;
-            padding: 12px 32px;
-            transition: all 0.3s ease;
-            border: none;
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 30%, #B38728 70%, #AA771C 100%);
         }
 
-        .btn-custom-light:hover {
-            background-color: #f8fafc;
-            color: #4f46e5;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        .glass-card {
+            background: rgba(15, 20, 18, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(212, 175, 55, 0.05);
         }
 
-        .btn-outline-custom {
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            color: #ffffff;
-            font-weight: 600;
-            border-radius: 50px;
-            padding: 12px 32px;
-            transition: all 0.3s ease;
+        .corner-ornament {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #d4af37;
+            pointer-events: none;
+        }
+        .corner-tl { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+        .corner-tr { top: 12px; right: 12px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 12px; left: 12px; border-right: none; border-top: none; }
+        .corner-br { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        .btn-outline-custom:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-            color: #ffffff;
-            border-color: #ffffff;
-            transform: translateY(-2px);
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); }
         }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            background: rgba(99, 102, 241, 0.1);
-            color: #6366f1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .card-custom {
-            border: 1px solid #f1f5f9;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .card-custom:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 30px rgba(0,0,0,0.05);
+        .pulse-glow {
+            animation: pulseGlow 4s infinite ease-in-out;
         }
     </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="antialiased selection:bg-gold-500 selection:text-black">
 
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top py-3">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2" href="#">
-                <i class="bi bi-box-seam text-primary"></i> BrandLogo
-            </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center gap-lg-3">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Bosh sahifa</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Xizmatlar</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">Biz haqimizda</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-outline-light rounded-pill px-4 ms-lg-2 mt-2 mt-lg-0" href="#contact">Bog'lanish</a>
-                    </li>
-                </ul>
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- Audio Player Button -->
+    <div class="fixed top-6 right-6 z-50">
+        <button id="musicToggle" class="w-14 h-14 rounded-full glass-card text-gold-300 flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 shadow-xl border border-gold-500/40">
+            <i id="musicIcon" class="fas fa-music text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <main class="min-h-screen flex flex-col items-center justify-between px-4 py-10 md:py-16">
+        
+        <!-- Header Monogram -->
+        <header class="text-center max-w-2xl mx-auto mt-4">
+            <div class="w-28 h-28 mx-auto mb-6 rounded-full border-2 border-gold-500/80 flex items-center justify-center relative p-2 pulse-glow bg-black/40 backdrop-blur-md">
+                <div class="w-full h-full rounded-full border border-gold-300/40 flex items-center justify-center">
+                    <span class="font-cursive text-5xl gold-gradient-text font-bold">НТ</span>
+                </div>
             </div>
-        </div>
-    </nav>
+            <p class="font-serif italic text-gold-300 tracking-[0.3em] uppercase text-xs md:text-sm">Тантанали Таклифнома</p>
+            <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold mt-2 gold-gradient-text tracking-wide uppercase">
+                Никоҳ Тўйи
+            </h1>
+            <div class="flex items-center justify-center my-5 space-x-4">
+                <div class="h-[1px] w-16 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
+                <i class="fas fa-gem text-gold-400 text-xs"></i>
+                <div class="h-[1px] w-16 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
+            </div>
+        </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section text-white py-5">
-        <div class="container">
-            <div class="row align-items-center gy-5">
-                <div class="col-lg-7 text-center text-lg-start">
-                    <span class="badge bg-white text-dark rounded-pill px-3 py-2 mb-3 shadow-sm fw-medium">
-                        👋 Xush kelibsiz!
-                    </span>
-                    <h1 class="display-3 fw-bold mb-3 tracking-tight">
-                        Салом!
-                    </h1>
-                    <p class="lead mb-4 opacity-90 fs-4 fw-light">
-                        Bu Bootstrap 5 asosida yaratilgan zamonaviy va sodda bir sahifali veb-sayt namunasidir. Bu yerda o'z xizmatlaringiz yoki loyihalaringizni taqdim etishingiz mumkin.
+        <!-- Main Card Section -->
+        <section class="w-full max-w-3xl my-6">
+            <div class="glass-card rounded-3xl p-8 sm:p-12 md:p-16 text-center relative overflow-hidden">
+                <div class="corner-ornament corner-tl"></div>
+                <div class="corner-ornament corner-tr"></div>
+                <div class="corner-ornament corner-bl"></div>
+                <div class="corner-ornament corner-br"></div>
+
+                <h2 class="font-serif text-2xl sm:text-3xl md:text-4xl font-semibold text-gold-200 mb-8 italic leading-relaxed">
+                    Ассалому алайкум,<br><span class="text-white">Ҳурматли азиз меҳмонимиз!</span>
+                </h2>
+
+                <div class="font-serif text-lg sm:text-xl md:text-2xl text-cream/90 leading-relaxed space-y-6 max-w-2xl mx-auto">
+                    <p>
+                        Сизни ва оила аъзоларингизни азиз фарзандимизнинг <span class="gold-gradient-text font-bold text-2xl sm:text-3xl block sm:inline mt-1">Никоҳ тўйи</span> муносабати билан 
                     </p>
-                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
-                        <a href="#features" class="btn btn-custom-light shadow">
-                            Boshlash <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                        <a href="#about" class="btn btn-outline-custom">
-                            Batafsil ma'lumot
-                        </a>
+                    
+                    <div class="py-6 my-4 border-y border-gold-500/30 bg-gold-500/5 rounded-2xl backdrop-blur-sm">
+                        <span class="block text-gold-300 font-sans text-xs tracking-[0.25em] uppercase mb-2">Тўй Ташрифи Вақти</span>
+                        <span class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-gold-400 tracking-wider">
+                            2026-йил 6-ноябрь
+                        </span>
                     </div>
-                </div>
-                <div class="col-lg-5 text-center">
-                    <div class="p-4 bg-white bg-opacity-10 rounded-4 backdrop-blur shadow-lg border border-white border-opacity-20">
-                        <i class="bi bi-code-slash display-1 text-white opacity-75"></i>
-                        <h3 class="h4 mt-3 text-white fw-semibold">Bootstrap 5 Ready</h3>
-                        <p class="small text-white-50 mb-0">Tez va moslashuvchan (Responsive) dizayn loyihalaringiz uchun.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Features Section -->
-    <section id="features" class="py-5 bg-light">
-        <div class="container py-4">
-            <div class="text-center max-w-2xl mx-auto mb-5">
-                <h2 class="fw-bold fs-1 mb-2">Imkoniyatlar</h2>
-                <p class="text-muted fs-5">Loyiha doirasida taqdim etiladigan asosiy afzalliklar</p>
+                    <p class="text-base sm:text-lg md:text-xl text-cream/90">
+                        куни <span class="text-gold-300 font-bold underline decoration-gold-500/40 underline-offset-8">наҳорги ошга</span> ва <span class="text-gold-300 font-bold">соат 10:00 да</span> ёзиладиган <span class="text-gold-300 font-bold underline decoration-gold-500/40 underline-offset-8">базм дастурхонимизга</span> таклиф этамиз.
+                    </p>
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-gold-500/20">
+                    <p class="font-serif italic text-gold-300/80 text-base md:text-lg mb-2">Ҳурмат ва эҳтиром ила</p>
+                    <h3 class="font-serif text-2xl sm:text-3xl md:text-4xl font-bold gold-gradient-text tracking-wide">
+                        Шукурулло ўғли Адхамжон Убайдуллаевлар оиласи.
+                    </h3>
+                </div>
             </div>
+        </section>
+
+        <!-- Countdown Timer -->
+        <section class="w-full max-w-3xl my-8 text-center">
+            <h3 class="font-serif text-xl sm:text-2xl text-gold-300 mb-6 tracking-widest uppercase text-xs sm:text-sm font-semibold">
+                Тантанали маросим бошланишига:
+            </h3>
+            <div id="countdown" class="grid grid-cols-4 gap-3 sm:gap-6 max-w-xl mx-auto">
+                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/30">
+                    <span id="days" class="block font-sans text-2xl sm:text-4xl font-extrabold gold-gradient-text">00</span>
+                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block">Кун</span>
+                </div>
+                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/30">
+                    <span id="hours" class="block font-sans text-2xl sm:text-4xl font-extrabold gold-gradient-text">00</span>
+                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block">Соат</span>
+                </div>
+                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/30">
+                    <span id="minutes" class="block font-sans text-2xl sm:text-4xl font-extrabold gold-gradient-text">00</span>
+                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block">Дақиқа</span>
+                </div>
+                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/30">
+                    <span id="seconds" class="block font-sans text-2xl sm:text-4xl font-extrabold gold-gradient-text">00</span>
+                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block">Сония</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Location Section -->
+        <section class="w-full max-w-3xl my-6">
+            <div class="glass-card rounded-3xl p-8 sm:p-10 text-center relative overflow-hidden">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/40 mb-4 shadow-inner">
+                    <i class="fas fa-map-marked-alt text-2xl"></i>
+                </div>
+                <h3 class="font-serif text-2xl sm:text-3xl font-bold text-gold-200 mb-3">Манзил ва Навигация</h3>
+                <p class="font-serif text-lg sm:text-xl text-cream/90 mb-1">
+                    <strong class="text-gold-300">Манзил:</strong> Андижон ш. “Машраб” тўйхонаси.
+                </p>
+                <p class="font-serif text-base sm:text-lg text-cream/70 mb-8">
+                    <strong class="text-gold-300">Мўлжал:</strong> Машраб кафеси.
+                </p>
+
+                <div class="flex flex-col md:flex-row items-center justify-center gap-8 bg-black/50 p-6 rounded-2xl border border-gold-500/20">
+                    <div class="bg-white p-3 rounded-xl shadow-2xl border-2 border-gold-500 flex flex-col items-center hover:scale-105 transition-transform duration-300">
+                        <img id="qrCodeImage" src="" alt="Google Maps QR Code" class="w-36 h-36 object-contain">
+                        <span class="text-[10px] text-gray-800 mt-2 font-sans font-bold tracking-tight">QR-Кодни сканер қилинг</span>
+                    </div>
+
+                    <div class="flex flex-col space-y-3 w-full md:w-auto text-center md:text-left">
+                        <p class="text-xs sm:text-sm text-cream/80 max-w-xs mx-auto md:mx-0 mb-2">
+                            Тўйхонага қулай ва хавфсиз етиб бориш учун харита дастурини танланг:
+                        </p>
+                        <a href="https://maps.google.com/maps?q=40.750759,72.341794&ll=40.750759,72.341794&z=16" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center justify-center px-6 py-3.5 gold-gradient-bg text-black font-bold rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all duration-300 space-x-3 text-sm">
+                            <i class="fas fa-map-marker-alt text-base"></i>
+                            <span>Google Maps орқали очиш</span>
+                        </a>
+                        <a href="https://yandex.com/maps/?pt=72.341794,40.750759&z=16&l=map" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center justify-center px-6 py-3.5 bg-black/80 hover:bg-black text-gold-300 font-semibold rounded-xl border border-gold-500/50 shadow-lg active:scale-95 transition-all duration-300 space-x-3 text-sm">
+                            <i class="fas fa-route text-base text-gold-400"></i>
+                            <span>Yandex Maps орқали очиш</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-10 text-center text-xs text-cream/40 font-light tracking-widest">
+            <p>© 2026 Тўй Таклифномаси. Барча эзгу тилаклар билан.</p>
+        </footer>
+
+    </main>
+
+    <!-- JavaScript logic -->
+    <script>
+        // 1. QR Code Setup
+        const mapsUrl = "https://maps.google.com/maps?q=40.750759,72.341794&ll=40.750759,72.341794&z=16";
+        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(mapsUrl)}&color=000000&bgcolor=ffffff`;
+        document.getElementById('qrCodeImage').src = qrApiUrl;
+
+        // 2. Countdown Timer Logic
+        const weddingDate = new Date("November 6, 2026 10:00:00").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            if (distance < 0) {
+                document.getElementById("countdown").innerHTML = "<div class='col-span-4 text-gold-300 text-xl font-serif py-4'>Тўй куни етиб келди! Хуш келибсиз!</div>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days < 10 ? '0' + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? '0' + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? '0' + seconds : seconds;
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // 3. Uzbek Oriental Festive Synthesizer (Traditional Harmonic Sound)
+        let audioCtx = null;
+        let isPlaying = false;
+        let timerId = null;
+
+        function playUzbekFestiveMelody() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            // Uzbek Traditional Scale Harmonics (Segah / Hijaz vibes)
+            const baseScale = [293.66, 311.13, 369.99, 392.00, 440.00, 466.16, 554.37, 587.33];
             
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card card-custom h-100 p-4 bg-white">
-                        <div class="card-body text-center text-md-start">
-                            <div class="feature-icon">
-                                <i class="bi bi-lightning-charge-fill"></i>
-                            </div>
-                            <h3 class="h5 fw-bold mb-3">Tezkor Yuklanish</h3>
-                            <p class="text-secondary mb-0">
-                                Yengil va toza kod tuzilishi tufayli sahifa har qanday qurilmada tez ishlaydi.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            function playNote() {
+                if (!isPlaying) return;
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
 
-                <div class="col-md-4">
-                    <div class="card card-custom h-100 p-4 bg-white">
-                        <div class="card-body text-center text-md-start">
-                            <div class="feature-icon">
-                                <i class="bi bi-phone-fill"></i>
-                            </div>
-                            <h3 class="h5 fw-bold mb-3">Moslashuvchan Dizayn</h3>
-                            <p class="text-secondary mb-0">
-                                Mobil telefonlar, planshetlar va kompyuter ekranlarida birdek mukammal ko'rinish.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                const freq = baseScale[Math.floor(Math.random() * baseScale.length)];
+                osc.type = 'triangle'; // Richer folk instrument timbre
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
-                <div class="col-md-4">
-                    <div class="card card-custom h-100 p-4 bg-white">
-                        <div class="card-body text-center text-md-start">
-                            <div class="feature-icon">
-                                <i class="bi bi-palette-fill"></i>
-                            </div>
-                            <h3 class="h5 fw-bold mb-3">Zamonaviy Uslub</h3>
-                            <p class="text-secondary mb-0">
-                                Eng so'nggi dizayn trendlariga mos keladigan ranglar va tipografiya tanlovi.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.06, audioCtx.currentTime + 0.15);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.8);
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white-50 mt-auto py-4 border-top border-secondary border-opacity-25">
-        <div class="container text-center text-md-between d-flex flex-column flex-md-row align-items-center gap-3">
-            <div>
-                <p class="mb-0">&copy; 2026 BrandName. Barcha huquqlar himoyalangan.</p>
-            </div>
-            <div class="d-flex gap-4">
-                <a href="#" class="text-white-50 text-decoration-none hover-white">
-                    <i class="bi bi-telegram fs-5"></i>
-                </a>
-                <a href="#" class="text-white-50 text-decoration-none hover-white">
-                    <i class="bi bi-github fs-5"></i>
-                </a>
-                <a href="#" class="text-white-50 text-decoration-none hover-white">
-                    <i class="bi bi-globe fs-5"></i>
-                </a>
-            </div>
-        </div>
-    </footer>
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
 
-    <!-- Bootstrap 5 JS Bundle CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+                osc.start();
+                osc.stop(audioCtx.currentTime + 1.9);
+
+                const nextInterval = 350 + Math.random() * 450;
+                timerId = setTimeout(playNote, nextInterval);
+            }
+
+            playNote();
+        }
+
+        const musicBtn = document.getElementById('musicToggle');
+        const musicIcon = document.getElementById('musicIcon');
+
+        musicBtn.addEventListener('click', () => {
+            if (!isPlaying) {
+                isPlaying = true;
+                playUzbekFestiveMelody();
+                musicIcon.className = "fas fa-volume-up text-xl text-gold-300 animate-pulse";
+                musicBtn.classList.add("border-gold-400", "bg-gold-500/20");
+            } else {
+                isPlaying = false;
+                if (timerId) clearTimeout(timerId);
+                musicIcon.className = "fas fa-music text-xl";
+                musicBtn.classList.remove("border-gold-400", "bg-gold-500/20");
+            }
+        });
+
+        // 4. Floating Gold Dust Canvas Animation
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.2 + 0.6;
+                this.speedY = - (Math.random() * 0.4 + 0.15);
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.6 + 0.2;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 65; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    </script>
 </body>
 </html>
