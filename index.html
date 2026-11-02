@@ -44,14 +44,54 @@
     </script>
     <style>
         body {
-            background-color: #060809;
+            background-color: #060807;
             color: #FAF7F2;
             font-family: 'Montserrat', sans-serif;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background Backdrop with Custom Image */
+        .uzbek-wedding-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -3;
+            pointer-events: none;
+            overflow: hidden;
+            background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnDwBV18xXMXJ4_8_WTQn609VJsGZMEKVJBsKOM8HOKo3r4MlY8DjIvVM&s=10') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .uzbek-wedding-backdrop::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(6, 8, 7, 0.75); /* Dark overlay for readability */
+        }
+
+        /* Uzbek National Ornament Background Pattern */
+        .uzbek-pattern-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            opacity: 0.15;
+            background-image: radial-gradient(#d4af37 0.9px, transparent 0.9px), radial-gradient(#d4af37 0.9px, #060807 0.9px);
+            background-size: 36px 36px;
+            background-position: 0 0, 18px 18px;
         }
 
         .gold-gradient-text {
-            background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
+            background: linear-gradient(135deg, #FFE89C 0%, #F5C542 30%, #D4AF37 60%, #AA771C 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -61,24 +101,25 @@
         }
 
         .glass-card {
-            background: rgba(15, 20, 18, 0.7);
+            background: rgba(14, 18, 16, 0.45);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(212, 175, 55, 0.05);
+            border: 1.5px solid rgba(212, 175, 55, 0.35);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(212, 175, 55, 0.05);
         }
 
-        .corner-ornament {
+        /* Uzbek Traditional Corner Ornaments SVG */
+        .national-corner {
             position: absolute;
-            width: 30px;
-            height: 30px;
-            border: 2px solid #d4af37;
+            width: 50px;
+            height: 50px;
             pointer-events: none;
+            color: #d4af37;
         }
-        .corner-tl { top: 12px; left: 12px; border-right: none; border-bottom: none; }
-        .corner-tr { top: 12px; right: 12px; border-left: none; border-bottom: none; }
-        .corner-bl { bottom: 12px; left: 12px; border-right: none; border-top: none; }
-        .corner-br { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+        .n-corner-tl { top: 10px; left: 10px; }
+        .n-corner-tr { top: 10px; right: 10px; transform: scaleX(-1); }
+        .n-corner-bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
+        .n-corner-br { bottom: 10px; right: 10px; transform: scale(-1); }
 
         #bgCanvas {
             position: fixed;
@@ -86,13 +127,13 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: -1;
+            z-index: -2;
             pointer-events: none;
         }
 
         @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
-            50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); }
+            0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.6); }
         }
         .pulse-glow {
             animation: pulseGlow 4s infinite ease-in-out;
@@ -101,125 +142,163 @@
 </head>
 <body class="antialiased selection:bg-gold-500 selection:text-black">
 
+    <div class="uzbek-wedding-backdrop"></div>
     <canvas id="bgCanvas"></canvas>
+    <div class="uzbek-pattern-overlay"></div>
 
     <!-- Audio Player Button -->
-    <div class="fixed top-6 right-6 z-50">
-        <button id="musicToggle" class="w-14 h-14 rounded-full glass-card text-gold-300 flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 shadow-xl border border-gold-500/40">
-            <i id="musicIcon" class="fas fa-music text-xl"></i>
+    <div class="fixed top-5 right-5 z-50">
+        <button id="musicToggle" aria-label="Мусиқа" class="w-14 h-14 rounded-full glass-card text-gold-300 flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 shadow-2xl border border-gold-500/50">
+            <i id="musicIcon" class="fas fa-volume-mute text-xl"></i>
         </button>
     </div>
 
+    <!-- Audio Element -->
+    <audio id="bgAudio" loop preload="auto">
+        <source src="https://e-taklif.uz/sounds/1724422524.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- Main Container -->
-    <main class="min-h-screen flex flex-col items-center justify-between px-4 py-10 md:py-16">
+    <main class="min-h-screen flex flex-col items-center justify-between px-4 py-8 md:py-14 max-w-4xl mx-auto relative z-10">
         
         <!-- Header Monogram -->
-        <header class="text-center max-w-2xl mx-auto mt-4">
-            <div class="w-28 h-28 mx-auto mb-6 rounded-full border-2 border-gold-500/80 flex items-center justify-center relative p-2 pulse-glow bg-black/40 backdrop-blur-md">
+        <header class="text-center max-w-2xl mx-auto mt-2">
+            <div class="w-32 h-32 mx-auto mb-5 rounded-full border-2 border-gold-500/80 flex items-center justify-center relative p-2 pulse-glow bg-black/60 backdrop-blur-md">
                 <div class="w-full h-full rounded-full border border-gold-300/40 flex items-center justify-center">
-                    <span class="font-cursive text-5xl gold-gradient-text font-bold">НТ</span>
+                    <span class="font-cursive text-2xl gold-gradient-text font-bold">M & D</span>
                 </div>
             </div>
             <p class="font-serif italic text-gold-300 tracking-[0.3em] uppercase text-xs md:text-sm">Тантанали Таклифнома</p>
             <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold mt-2 gold-gradient-text tracking-wide uppercase">
                 Никоҳ Тўйи
             </h1>
-            <div class="flex items-center justify-center my-5 space-x-4">
-                <div class="h-[1px] w-16 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
-                <i class="fas fa-gem text-gold-400 text-xs"></i>
-                <div class="h-[1px] w-16 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
+            <div class="flex items-center justify-center my-4 space-x-4">
+                <div class="h-[1px] w-20 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
+                <i class="fas fa-certificate text-gold-400 text-xs"></i>
+                <div class="h-[1px] w-20 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
             </div>
         </header>
 
-        <!-- Main Card Section -->
-        <section class="w-full max-w-3xl my-6">
-            <div class="glass-card rounded-3xl p-8 sm:p-12 md:p-16 text-center relative overflow-hidden">
-                <div class="corner-ornament corner-tl"></div>
-                <div class="corner-ornament corner-tr"></div>
-                <div class="corner-ornament corner-bl"></div>
-                <div class="corner-ornament corner-br"></div>
+        <!-- SVG Uzbek Corner Pattern Component -->
+        <svg class="hidden">
+            <defs>
+                <g id="uzbek-corner-svg">
+                    <path fill="currentColor" d="M0,0 L25,0 C25,10 20,15 15,15 C15,20 10,25 0,25 L0,0 Z M5,5 L5,12 C10,12 12,10 12,5 L5,5 Z" />
+                    <path fill="none" stroke="currentColor" stroke-width="1.5" d="M2,2 L45,2 C35,15 30,25 30,45 L2,45" />
+                    <circle cx="12" cy="12" r="2" fill="currentColor" />
+                </g>
+            </defs>
+        </svg>
 
-                <h2 class="font-serif text-2xl sm:text-3xl md:text-4xl font-semibold text-gold-200 mb-8 italic leading-relaxed">
+        <!-- Main Card Section -->
+        <section class="w-full my-4">
+            <div class="glass-card rounded-3xl p-6 sm:p-12 md:p-16 text-center relative overflow-hidden">
+                <!-- Uzbek National Corners -->
+                <svg class="national-corner n-corner-tl" viewBox="0 0 50 50"><use href="#uzbek-corner-svg"/></svg>
+                <svg class="national-corner n-corner-tr" viewBox="0 0 50 50"><use href="#uzbek-corner-svg"/></svg>
+                <svg class="national-corner n-corner-bl" viewBox="0 0 50 50"><use href="#uzbek-corner-svg"/></svg>
+                <svg class="national-corner n-corner-br" viewBox="0 0 50 50"><use href="#uzbek-corner-svg"/></svg>
+
+                <h2 class="font-serif text-2xl sm:text-3xl md:text-4xl font-semibold text-gold-200 mb-6 italic leading-relaxed">
                     Ассалому алайкум,<br><span class="text-white">Ҳурматли азиз меҳмонимиз!</span>
                 </h2>
 
                 <div class="font-serif text-lg sm:text-xl md:text-2xl text-cream/90 leading-relaxed space-y-6 max-w-2xl mx-auto">
                     <p>
-                        Сизни азиз фарзандимизнинг <span class="gold-gradient-text font-bold text-2xl sm:text-3xl block sm:inline mt-1">Никоҳ тўйи</span> муносабати билан 
+                        Сизни ва оила аъзоларингизни азиз фарзандларимиз
                     </p>
-                    <!-- <p>
-                        Сизни ва оила аъзоларингизни азиз фарзандимизнинг <span class="gold-gradient-text font-bold text-2xl sm:text-3xl block sm:inline mt-1">Никоҳ тўйи</span> муносабати билан 
-                    </p>-->
-                    
-                    <div class="py-6 my-4 border-y border-gold-500/30 bg-gold-500/5 rounded-2xl backdrop-blur-sm">
-                        <span class="block text-gold-300 font-sans text-xs tracking-[0.25em] uppercase mb-2">Тўй Ташрифи Вақти</span>
+                    <p>
+                        <span class="gold-gradient-text font-bold sm:text-5xl md:text-6xl sm:text-3xl block sm:inline mt-1 uppercase">Муҳаммадрасул</span>
+                    </p>
+                    <p>
+                        <span class="gold-gradient-text font-bold text-2xl sm:text-3xl block sm:inline">&</span>
+                    </p>
+                    <p>
+                        <span class="gold-gradient-text font-bold sm:text-5xl md:text-6xl sm:text-3xl block sm:inline mt-1 uppercase">Дурдонахон</span>
+                    </p>
+                    <p>
+                        ларни <span class="gold-gradient-text font-bold text-2xl sm:text-3xl block sm:inline mt-1">Никоҳ тўйи</span> муносабати билан 
+                    </p>
+
+                    <div class="py-5 my-4 border-y border-gold-500/40 bg-gold-500/10 rounded-2xl backdrop-blur-sm shadow-inner relative">
+                        <span class="block text-gold-300 font-sans text-xs tracking-[0.25em] uppercase mb-1 font-semibold">Тўй Маросими Санаси</span>
                         <span class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-gold-400 tracking-wider">
                             2026-йил 6-ноябрь
                         </span>
                     </div>
 
                     <p class="text-base sm:text-lg md:text-xl text-cream/90">
-                        куни <span class="text-gold-300 font-bold underline decoration-gold-500/40 underline-offset-8">наҳорги ошга</span> таклиф этамиз.
+                        куни <span class="text-gold-300 font-bold underline decoration-gold-500/50 underline-offset-8">наҳорги ошга</span> таклиф этамиз.
                     </p>
                 </div>
 
-                <div class="mt-12 pt-8 border-t border-gold-500/20">
-                    <p class="font-serif italic text-gold-300/80 text-base md:text-lg mb-2">Ҳурмат ва эҳтиром ила</p>
+                <div class="mt-10 pt-8 border-t border-gold-500/30">
+                    <p class="font-serif italic text-gold-300/90 text-base md:text-lg mb-2">Ҳурмат ва эҳтиром ила</p>
                     <h3 class="font-serif text-2xl sm:text-3xl md:text-4xl font-bold gold-gradient-text tracking-wide">
-                        Шукурулло ўғли Адхамжон Убайдуллаевлар оиласи.
+                        <span class="uppercase">Шукурулло</span> ўғли
+                    </h3>
+                    <h3 class="font-serif text-2xl sm:text-3xl md:text-4xl font-bold gold-gradient-text tracking-wide">
+                        <span class="">Адхамжон Убайдуллаев</span>лар оиласи.
                     </h3>
                 </div>
             </div>
         </section>
 
         <!-- Countdown Timer -->
-        <section class="w-full max-w-3xl my-8 text-center">
-            <h3 class="font-serif text-xl sm:text-2xl text-gold-300 mb-6 tracking-widest uppercase text-xs sm:text-sm font-semibold">
-                Тантанали маросим бошланишига:
-            </h3>
+        <section class="w-full my-6 text-center">
+            <div class="inline-flex items-center space-x-2 text-gold-300 mb-5 tracking-widest uppercase text-xs sm:text-sm font-semibold">
+                <i class="fas fa-hourglass-start"></i>
+                <span>Тантанали маросим бошланишига:</span>
+            </div>
             <div id="countdown" class="grid grid-cols-4 gap-3 sm:gap-6 max-w-xl mx-auto">
-                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/30">
+                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/40 shadow-lg">
                     <span id="days" class="block font-sans text-2xl sm:text-4xl font-extrabold gold-gradient-text">00</span>
-                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block">Кун</span>
+                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block font-medium">Кун</span>
                 </div>
-                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/30">
+                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/40 shadow-lg">
                     <span id="hours" class="block font-sans text-2xl sm:text-4xl font-extrabold gold-gradient-text">00</span>
-                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block">Соат</span>
+                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block font-medium">Соат</span>
                 </div>
-                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/30">
+                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/40 shadow-lg">
                     <span id="minutes" class="block font-sans text-2xl sm:text-4xl font-extrabold gold-gradient-text">00</span>
-                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block">Дақиқа</span>
+                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block font-medium">Дақиқа</span>
                 </div>
-                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/30">
+                <div class="glass-card rounded-2xl p-4 text-center border border-gold-500/40 shadow-lg">
                     <span id="seconds" class="block font-sans text-2xl sm:text-4xl font-extrabold gold-gradient-text">00</span>
-                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block">Сония</span>
+                    <span class="text-[10px] sm:text-xs text-cream/70 uppercase tracking-widest mt-1 block font-medium">Сония</span>
                 </div>
             </div>
         </section>
 
         <!-- Location Section -->
-        <section class="w-full max-w-3xl my-6">
-            <div class="glass-card rounded-3xl p-8 sm:p-10 text-center relative overflow-hidden">
-                <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/40 mb-4 shadow-inner">
+        <section class="w-full my-4">
+            <div class="glass-card rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden">
+                <svg class="national-corner n-corner-tl" viewBox="0 0 50 50"><use href="#uzbek-corner-svg"/></svg>
+                <svg class="national-corner n-corner-tr" viewBox="0 0 50 50"><use href="#uzbek-corner-svg"/></svg>
+                <svg class="national-corner n-corner-bl" viewBox="0 0 50 50"><use href="#uzbek-corner-svg"/></svg>
+                <svg class="national-corner n-corner-br" viewBox="0 0 50 50"><use href="#uzbek-corner-svg"/></svg>
+
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/50 mb-4 shadow-inner">
                     <i class="fas fa-map-marked-alt text-2xl"></i>
                 </div>
+
                 <h3 class="font-serif text-2xl sm:text-3xl font-bold text-gold-200 mb-3">Манзил ва Навигация</h3>
                 <p class="font-serif text-lg sm:text-xl text-cream/90 mb-1">
                     <strong class="text-gold-300">Манзил:</strong> Андижон ш. “Машраб” тўйхонаси.
                 </p>
-                <p class="font-serif text-base sm:text-lg text-cream/70 mb-8">
+                <p class="font-serif text-base sm:text-lg text-cream/70 mb-6">
                     <strong class="text-gold-300">Мўлжал:</strong> Машраб кафеси.
                 </p>
 
-                <div class="flex flex-col md:flex-row items-center justify-center gap-8 bg-black/50 p-6 rounded-2xl border border-gold-500/20">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6 bg-black/60 p-6 rounded-2xl border border-gold-500/30 mb-8">
                     <div class="bg-white p-3 rounded-xl shadow-2xl border-2 border-gold-500 flex flex-col items-center hover:scale-105 transition-transform duration-300">
                         <img id="qrCodeImage" src="" alt="Google Maps QR Code" class="w-36 h-36 object-contain">
                         <span class="text-[10px] text-gray-800 mt-2 font-sans font-bold tracking-tight">QR-Кодни сканер қилинг</span>
                     </div>
 
                     <div class="flex flex-col space-y-3 w-full md:w-auto text-center md:text-left">
-                        <p class="text-xs sm:text-sm text-cream/80 max-w-xs mx-auto md:mx-0 mb-2">
-                            Тўйхонага қулай ва хавфсиз етиб бориш учун харита дастурини танланг:
+                        <p class="text-xs sm:text-sm text-cream/80 max-w-xs mx-auto md:mx-0 mb-1">
+                            Тўйхонага олиб борувчи қулай навигаторни танланг:
                         </p>
                         <a href="https://maps.google.com/maps?q=40.750759,72.341794&ll=40.750759,72.341794&z=16" 
                            target="_blank" 
@@ -241,7 +320,7 @@
         </section>
 
         <!-- Footer -->
-        <footer class="mt-10 text-center text-xs text-cream/40 font-light tracking-widest">
+        <footer class="mt-8 text-center text-xs text-cream/40 font-light tracking-widest">
             <p>© 2026 Тўй Таклифномаси. Барча эзгу тилаклар билан.</p>
         </footer>
 
@@ -280,60 +359,48 @@
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        // 3. Uzbek Oriental Festive Synthesizer (Traditional Harmonic Sound)
-        let audioCtx = null;
-        let isPlaying = false;
-        let timerId = null;
-
-        function playUzbekFestiveMelody() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-
-            // Uzbek Traditional Scale Harmonics (Segah / Hijaz vibes)
-            const baseScale = [293.66, 311.13, 369.99, 392.00, 440.00, 466.16, 554.37, 587.33];
-            
-            function playNote() {
-                if (!isPlaying) return;
-                
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-
-                const freq = baseScale[Math.floor(Math.random() * baseScale.length)];
-                osc.type = 'triangle'; // Richer folk instrument timbre
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-                gain.gain.setValueAtTime(0, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.06, audioCtx.currentTime + 0.15);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.8);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                osc.start();
-                osc.stop(audioCtx.currentTime + 1.9);
-
-                const nextInterval = 350 + Math.random() * 450;
-                timerId = setTimeout(playNote, nextInterval);
-            }
-
-            playNote();
-        }
-
+        // 3. Audio Player Logic
+        const audio = document.getElementById('bgAudio');
         const musicBtn = document.getElementById('musicToggle');
         const musicIcon = document.getElementById('musicIcon');
+        let isPlaying = false;
 
-        musicBtn.addEventListener('click', () => {
-            if (!isPlaying) {
+        function playAudio() {
+            audio.play().then(() => {
                 isPlaying = true;
-                playUzbekFestiveMelody();
                 musicIcon.className = "fas fa-volume-up text-xl text-gold-300 animate-pulse";
                 musicBtn.classList.add("border-gold-400", "bg-gold-500/20");
-            } else {
+            }).catch(error => {
                 isPlaying = false;
-                if (timerId) clearTimeout(timerId);
-                musicIcon.className = "fas fa-music text-xl";
-                musicBtn.classList.remove("border-gold-400", "bg-gold-500/20");
+                musicIcon.className = "fas fa-volume-mute text-xl";
+            });
+        }
+
+        function pauseAudio() {
+            audio.pause();
+            isPlaying = false;
+            musicIcon.className = "fas fa-volume-mute text-xl";
+            musicBtn.classList.remove("border-gold-400", "bg-gold-500/20");
+        }
+
+        // Auto-play on first click anywhere (browsers require explicit interaction to play audio)
+        const enableAutoplay = () => {
+            if (!isPlaying) {
+                playAudio();
+            }
+            document.removeEventListener('click', enableAutoplay);
+            document.removeEventListener('touchstart', enableAutoplay);
+        };
+
+        document.addEventListener('click', enableAutoplay);
+        document.addEventListener('touchstart', enableAutoplay);
+
+        musicBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isPlaying) {
+                pauseAudio();
+            } else {
+                playAudio();
             }
         });
 
